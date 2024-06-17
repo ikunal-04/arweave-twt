@@ -267,11 +267,11 @@ const ViewPosts = () => {
                             <TabsTrigger value="your-posts">Your Posts</TabsTrigger>
                         </TabsList>
                         <TabsContent value="all-posts">
-                            <ScrollArea className="h-[500px] rounded-md border p-4 text-white">
+                            <ScrollArea className="h-[550px] rounded-md border p-4 text-white">
                                 <div>
                                 {isloading ? (
                                     <div className="flex items-center space-x-4 text-3xl text-white">
-                                    loading....
+                                    Loading...
                                     </div>
                                 ) : (
                                     <div>
@@ -305,7 +305,7 @@ const ViewPosts = () => {
                                         <div>
                                             {isloading ? (
                                                 <div className="flex items-center space-x-4 text-3xl text-white">
-                                                    loading....
+                                                    Loading...
                                                 </div>
                                             ) : (
                                                 <div>
