@@ -1,6 +1,15 @@
 import { ConnectButton } from "@arweave-wallet-kit/react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
 
 const Header = () => {
   return (
@@ -11,7 +20,21 @@ const Header = () => {
         </Link>
       </div> 
       <div className="flex gap-3 items-center">
-        <Button className="rounded-2xl p-6 bg-[rgb(30,129,176)] hover:bg-blue-500">Buy domain</Button>
+        <div>
+        <Dialog>
+          <DialogTrigger>
+            <Button className="rounded-2xl p-6 bg-[rgb(30,129,176)] hover:bg-blue-500">Buy domain</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Oops! 😢</DialogTitle>
+              <DialogDescription>
+                Have to wait little while longer for this feature to be available!
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+        </div>
         <ConnectButton
           accent="rgb(30,129,176)"
           profileModal={true}
