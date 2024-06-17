@@ -12,7 +12,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { Toaster } from "@/components/ui/toaster";
 import { Input } from "@/components/ui/input";
 import SideBar from "@/components/ui/sidebar";
-import { CircleUserRound } from 'lucide-react';
+import { CircleUserRound, Trash2 } from 'lucide-react';
 import RegisterModal from "@/components/ui/register-modal";
 
 import {
@@ -89,6 +89,7 @@ const ViewPosts = () => {
                 const parsedData = JSON.parse(msg.Data);
                 return parsedData;
             });
+            console.log("fetched user posts: ",parsedPosts[0]);       
             setUserPosts(parsedPosts[0]);
         } catch (error) {
             console.log(error);
@@ -181,6 +182,35 @@ const ViewPosts = () => {
         } finally {
             setIsLoading(false);
         }
+    }
+
+    const DeletePosts = async (postId: string) => {
+        try {
+            const res = await message({
+                process: processId,
+                tags: [{ name: "Action", value: "Delete-Post" },
+                      { name: "Post-Id", value: postId }],
+                data: "",
+                signer: createDataItemSigner(window.arweaveWallet),
+              });
+          
+              console.log("Delete Post result", result);
+          
+              const deleteResult = await result({
+                process: processId,
+                message: res,
+              });
+          
+              console.log("Deleted successfully", deleteResult);
+              console.log(deleteResult.Messages[0].Data);
+              toast({
+                description: "Post Deleted Successfully!!",
+              });
+              fetchUserPosts();         
+        } catch (error) {
+            console.log(error);           
+        }
+
     }
 
     useEffect(() => {
@@ -317,6 +347,27 @@ const ViewPosts = () => {
                                                                     <p className="font-semibold">{post.Authors}</p>
                                                                 </div>
                                                                 <h3 className="text-xl">{post.BODY}</h3>
+                                                                <Dialog>
+                                                                <DialogTrigger>
+                                                                    <Trash2 size={20} />
+                                                                </DialogTrigger>
+                                                                <DialogContent>
+                                                                    <DialogHeader>
+                                                                    <DialogTitle>Are you absolutely sure?</DialogTitle>
+                                                                    <DialogDescription>
+                                                                        This action cannot be undone. This will permanently delete your account
+                                                                        and remove your data from ao computer!
+                                                                    </DialogDescription>
+                                                                    </DialogHeader>
+                                                                    <DialogFooter>
+                                                                    <Button
+                                                                        onClick={() => DeletePosts(post.ID)}
+                                                                        variant={"destructive"}>
+                                                                        Delete Account
+                                                                    </Button>
+                                                                    </DialogFooter>
+                                                                </DialogContent>
+                                                                </Dialog>
                                                             </div>                                    
                                                         </div>
                                                     ))}                       
