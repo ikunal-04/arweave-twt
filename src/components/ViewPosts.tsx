@@ -5,7 +5,6 @@ import { Outlet } from "react-router-dom";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea"
@@ -55,7 +54,7 @@ const ViewPosts = () => {
 
     const fetchPosts = async () => {
         if (!connected) return;
-
+        setIsLoading(true);
         try {
             const response = await dryrun({
                 process: processId,
@@ -68,15 +67,16 @@ const ViewPosts = () => {
                 return parsedData;
             });
             setPosts(parsedPosts[0]);
-            setIsLoading(false);
         } catch (error) {
             console.log(error);  
+        } finally {
+            setIsLoading(false);
         }
     };
 
     const fetchUserPosts = async () => {
         if (!connected) return;
-
+        setIsLoading(true);
         try {
             const response = await dryrun({
                 process: processId,
@@ -90,9 +90,10 @@ const ViewPosts = () => {
                 return parsedData;
             });
             setUserPosts(parsedPosts[0]);
-            setIsLoading(false);
         } catch (error) {
             console.log(error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -157,33 +158,37 @@ const ViewPosts = () => {
     }
 
     const Profile = async () => {
-        const response = await dryrun({
-          process: processId,
-          tags: [{ name: "Action", value: "Profile-user" },
-                {name: "Author-Id", value: authorId}
-          ],
-          anchor: "latest"
-        });
-        console.log("the response from profile: ", response);
-        
-        const parsedProfile = response.Messages.map((msg) => {
-            const parsedData = JSON.parse(msg.Data);
-            return parsedData;
-        });
-        console.log(parsedProfile[0]);
-        
-        setProfile(parsedProfile[0]);
-
+        setIsLoading(true);
+        try {
+            const response = await dryrun({
+                process: processId,
+                tags: [{ name: "Action", value: "Profile-user" },
+                      {name: "Author-Id", value: authorId}
+                ],
+                anchor: "latest"
+              });
+              console.log("the response from profile: ", response);
+              
+              const parsedProfile = response.Messages.map((msg) => {
+                  const parsedData = JSON.parse(msg.Data);
+                  return parsedData;
+              });
+              console.log(parsedProfile[0]);
+              
+              setProfile(parsedProfile[0]);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     useEffect(() => {
         if (connected) {
-            setIsLoading(true);
             fetchPosts();
             fetchUserPosts();
             Profile();
             console.log("This is the active address: ", activeAddress);
-            setIsLoading(false);
         }
     }, [connected]);
 
@@ -209,7 +214,7 @@ const ViewPosts = () => {
                                     <div className="grid gap-4 py-4">
                                     <div className="grid grid-cols-4 items-center gap-4">
                                         <Label htmlFor="post" className="text-right">
-                                        Post
+                                            Post
                                         </Label>
                                         <Textarea id="post" placeholder="How's your day!" className="col-span-3" onChange={(e) => setPostDescription(e.target.value)} />
                                     </div>
@@ -235,9 +240,10 @@ const ViewPosts = () => {
                                         <div className="grid gap-4 py-4">
                                         {profile.map(user => (
                                             <div key={user.ID} className='grid mb-3'>
-                                                <div className="border rounded-lg px-2 grid gap-y-2 py-1">
-                                                    <h3> {user.PID}</h3>
-                                                    <p className="text-black"> {user.NAME}</p>
+                                                <div className="rounded-lg px-2 grid gap-y-4 py-1">
+                                                    <p className="text-black text-3xl font-semibold"> {user.NAME}</p>
+                                                    <Label id="id" className="text-md font-medium">ID: </Label>
+                                                    <h3 className="border text-lg p-3" id="id">{user.PID}</h3>
                                                 </div>                                   
                                             </div>
                                         ))} 
@@ -264,12 +270,8 @@ const ViewPosts = () => {
                             <ScrollArea className="h-[500px] rounded-md border p-4 text-white">
                                 <div>
                                 {isloading ? (
-                                    <div className="flex items-center space-x-4">
-                                    <Skeleton className="h-12 w-12 rounded-full" />
-                                    <div className="space-y-2">
-                                        <Skeleton className="h-4 w-[250px]" />
-                                        <Skeleton className="h-4 w-[200px]" />
-                                    </div>
+                                    <div className="flex items-center space-x-4 text-3xl text-white">
+                                    loading....
                                     </div>
                                 ) : (
                                     <div>
@@ -302,12 +304,8 @@ const ViewPosts = () => {
                                     <ScrollArea className="h-[500px] rounded-md border p-4 text-white">
                                         <div>
                                             {isloading ? (
-                                                <div className="flex items-center space-x-4">
-                                                    <Skeleton className="h-12 w-12 rounded-full" />
-                                                    <div className="space-y-2">
-                                                        <Skeleton className="h-4 w-[250px]" />
-                                                        <Skeleton className="h-4 w-[200px]" />
-                                                    </div>
+                                                <div className="flex items-center space-x-4 text-3xl text-white">
+                                                    loading....
                                                 </div>
                                             ) : (
                                                 <div>
