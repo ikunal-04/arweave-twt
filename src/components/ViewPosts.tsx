@@ -355,8 +355,7 @@ const ViewPosts = () => {
                                                                     <DialogHeader>
                                                                     <DialogTitle>Are you absolutely sure?</DialogTitle>
                                                                     <DialogDescription>
-                                                                        This action cannot be undone. This will permanently delete your account
-                                                                        and remove your data from ao computer!
+                                                                        This action cannot be undone. This will permanently delete your post from ao computer!
                                                                     </DialogDescription>
                                                                     </DialogHeader>
                                                                     <DialogFooter>
