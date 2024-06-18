@@ -287,7 +287,7 @@ const ViewPosts = () => {
                                             <div>
                                                 {profile.map(user => (
                                                 <div key={user.ID} className='grid mb-3'>
-                                                    <div className="rounded-lg px-6 grid gap-y-4 py-1">
+                                                    <div className="rounded-lg px-auto grid gap-y-4 py-1">
                                                         <p className="text-black text-3xl font-semibold"> {user.NAME}</p>
                                                         <Label id="id" className="text-md font-medium">ID: </Label>
                                                         <h3 className="border text-lg p-3" id="id">{user.PID}</h3>
