@@ -12,7 +12,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { Toaster } from "@/components/ui/toaster";
 import { Input } from "@/components/ui/input";
 import SideBar from "@/components/ui/sidebar";
-import { CircleUserRound, Trash2 } from 'lucide-react';
+import { CircleUserRound, Trash2, Heart } from 'lucide-react';
 import RegisterModal from "@/components/ui/register-modal";
 
 import {
@@ -41,6 +41,7 @@ const ViewPosts = () => {
     const activeAddress = useActiveAddress();
     const [postDescription, setPostDescription] = useState("");
     const [profile, setProfile] = useState<any[]>([]);
+    const [likedPosts, setLikedPosts] = useState<string[]>([]);
     const { toast } = useToast();
 
     const processId = "OeQOvq-6j2b7wW0WE_kWkhyXGMuZKA1z71mz8ZPmKyc";
@@ -183,6 +184,14 @@ const ViewPosts = () => {
             setIsLoading(false);
         }
     }
+    
+    const handleLikeToggle = (postId: string) => {
+        if (likedPosts.includes(postId)) {
+            setLikedPosts(likedPosts.filter(id => id !== postId));
+        } else {
+            setLikedPosts([...likedPosts, postId]);
+        }
+    };
 
     const DeletePosts = async (postId: string) => {
         try {
@@ -268,15 +277,25 @@ const ViewPosts = () => {
                                 {localStorage.getItem("authorId") ? (
                                     <DialogContent>
                                         <div className="grid gap-4 py-4">
-                                        {profile.map(user => (
-                                            <div key={user.ID} className='grid mb-3'>
-                                                <div className="rounded-lg px-2 grid gap-y-4 py-1">
-                                                    <p className="text-black text-3xl font-semibold"> {user.NAME}</p>
-                                                    <Label id="id" className="text-md font-medium">ID: </Label>
-                                                    <h3 className="border text-lg p-3" id="id">{user.PID}</h3>
-                                                </div>                                   
+                                        {isloading ? (
+                                            <div>
+                                                <div className="flex items-center space-x-4 text-3xl text-black">
+                                                Loading...
+                                                </div>
                                             </div>
-                                        ))} 
+                                        ) : (
+                                            <div>
+                                                {profile.map(user => (
+                                                <div key={user.ID} className='grid mb-3'>
+                                                    <div className="rounded-lg px-2 grid gap-y-4 py-1">
+                                                        <p className="text-black text-3xl font-semibold"> {user.NAME}</p>
+                                                        <Label id="id" className="text-md font-medium">ID: </Label>
+                                                        <h3 className="border text-lg p-3" id="id">{user.PID}</h3>
+                                                    </div>                                   
+                                                </div>
+                                                ))}
+                                            </div>
+                                        )} 
                                         </div>
                                     </DialogContent>
                                 ) : (
@@ -307,12 +326,21 @@ const ViewPosts = () => {
                                     <div>
                                     {posts.map(post => (
                                         <div key={post.ID} className='grid mb-3'>
-                                            <div className="border rounded-lg px-2 grid gap-y-2 py-3">
+                                            <div className="border rounded-lg px-3 grid gap-y-2 py-3">
                                                 <div className="flex gap-2 items-center">
                                                     <CircleUserRound size={20}/>
                                                     <p className="font-semibold">{post.Authors}</p>
                                                 </div>
                                                 <h3 className="text-xl">{post.BODY}</h3>
+                                                <div>
+                                                        <span
+                                                            className="cursor-pointer"
+                                                            onClick={() => handleLikeToggle(post.ID)}
+                                                        >
+                                                            <HeartIcon filled={likedPosts.includes(post.ID)} />
+                                                        </span>
+                                                </div>
+
                                             </div>                                   
                                         </div>
                                     ))}                       
@@ -341,7 +369,7 @@ const ViewPosts = () => {
                                                 <div>
                                                     {userPosts.map(post => (
                                                         <div key={post.ID} className='grid mb-3'>
-                                                            <div className="border rounded-lg px-2 grid gap-y-2 py-3">
+                                                            <div className="border rounded-lg px-3 grid gap-y-2 py-3">
                                                                 <div className="flex gap-2 items-center">
                                                                     <CircleUserRound size={20}/>
                                                                     <p className="font-semibold">{post.Authors}</p>
@@ -385,5 +413,9 @@ const ViewPosts = () => {
         </main>
     );
 }
+
+const HeartIcon = ({ filled }: { filled: boolean }) => {
+    return filled ? <Heart size={20} fill="red" strokeWidth={0} /> : <Heart size={20} />;
+};
 
 export default ViewPosts;
