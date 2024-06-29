@@ -390,7 +390,7 @@ const ViewPosts = () => {
                                                                     <Button
                                                                         onClick={() => DeletePosts(post.ID)}
                                                                         variant={"destructive"}>
-                                                                        Delete Account
+                                                                        Delete Post
                                                                     </Button>
                                                                     </DialogFooter>
                                                                 </DialogContent>
